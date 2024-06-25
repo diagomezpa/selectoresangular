@@ -1,9 +1,20 @@
 import { Injectable } from '@angular/core';
+import { Region } from '../interfaces/country.interfaces';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContriesService {
+  private _regions: Region[] = [
+    Region.Africa,
+    Region.Americas,
+    Region.Europe,
+    Region.Oceania,
+  ];
 
-  constructor() { }
+  constructor() {}
+
+  get regions(): Region[] {
+    return [...this._regions]; // el operador spread rompela relacion con el _region
+  }
 }

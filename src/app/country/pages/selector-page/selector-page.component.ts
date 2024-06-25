@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContriesService } from '../../services/contries.service';
-import { Region } from '../../interfaces/country.interfaces';
-import { switchMap } from 'rxjs';
+import { Region, SmallCountry } from '../../interfaces/country.interfaces';
+import { switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'selector-page',
@@ -10,6 +10,8 @@ import { switchMap } from 'rxjs';
   styleUrl: './selector-page.component.css',
 })
 export class SelectorPageComponent implements OnInit {
+  public countriesByRegion: SmallCountry[] = [];
+
   public myForm: FormGroup = this.fb.group({
     region: ['', Validators.required],
     country: ['', Validators.required],
@@ -32,14 +34,15 @@ export class SelectorPageComponent implements OnInit {
     this.myForm
       .get('region')!
       .valueChanges.pipe(
+        //tap(() => this.myForm.get('country')!.setValue('')),
         //recibe el valor de obsebable y lo suscribe a otro
         switchMap((region) =>
           this.countriesServices.getCountriesByRegion(region)
         )
         //switchMap(this.countriesServices.getCountriesByRegion)
       )
-      .subscribe((region) => {
-        console.log({ region });
+      .subscribe((countries) => {
+        this.countriesByRegion = countries;
       });
   }
 }

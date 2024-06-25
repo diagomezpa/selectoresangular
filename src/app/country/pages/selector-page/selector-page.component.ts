@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ContriesService } from '../../services/contries.service';
 import { Region } from '../../interfaces/country.interfaces';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'selector-page',
@@ -28,8 +29,17 @@ export class SelectorPageComponent implements OnInit {
   }
 
   onRegionChanged(): void {
-    this.myForm.get('region')!.valueChanges.subscribe((region) => {
-      console.log({ region });
-    });
+    this.myForm
+      .get('region')!
+      .valueChanges.pipe(
+        //recibe el valor de obsebable y lo suscribe a otro
+        switchMap((region) =>
+          this.countriesServices.getCountriesByRegion(region)
+        )
+        //switchMap(this.countriesServices.getCountriesByRegion)
+      )
+      .subscribe((region) => {
+        console.log({ region });
+      });
   }
 }
